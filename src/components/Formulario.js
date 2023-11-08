@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "../formulario.css";
-import meses from "./Date";
+import meses from "./Date.js";
 
 export function Formulario() {
   const [dia, setDia] = useState("");
@@ -13,61 +13,72 @@ export function Formulario() {
   const [ErrorB, setErrorB] = useState(false);
   const [ErrorC, setErrorC] = useState(false);
 
-
   useEffect(() => {}, []);
 
-   const validarFecha = () => {
+  const validarFecha = () => {
+    let isValid = true;
 
     if (dia === "") {
       setErrorA("This field is required", true);
+      isValid = false;
     } else if (dia > 31) {
       setErrorA("Must be a valid day", true);
+      isValid = false;
     } else if (isNaN(dia)) {
       setErrorA("the date is not valid", true);
+      isValid = false;
     }
-    
 
-     if (mes === "") {
-     setErrorB("This field is required", true);
-  } else if (mes > 12) {
-     setErrorB("Must be a valid month", true);
-  } else if (
-    (mes === 2 || dia > meses.febrero.dias) &&
-    (mes === 4 || dia > meses.abril.dias) &&
-    (mes === 6 || dia > meses.junio.dias) &&
-    (mes === 9 || dia > meses.septiembre.dias) &&
-    (mes === 11 || dia > meses.noviembre.dias)
-  ) {
-     setErrorA("Must be a valid day", true);
-     setErrorB("Must be a valid month", true);
-  } else if (isNaN(mes)) {
-     setErrorB("The date is not valid", true);
-  }
+    if (mes === "") {
+      setErrorB("This field is required", true);
+      isValid = false;
+    } else if (mes > 12) {
+      setErrorB("Must be a valid month", true);
+      isValid = false;
+    } else if (
+      (mes === 2 || dia > meses.febrero.dias) &&
+      (mes === 4 || dia > meses.abril.dias) &&
+      (mes === 6 || dia > meses.junio.dias) &&
+      (mes === 9 || dia > meses.septiembre.dias) &&
+      (mes === 11 || dia > meses.noviembre.dias)
+    ) {
+      setErrorA("Must be a valid day", true);
+      setErrorB("Must be a valid month", true);
+      isValid = false;
+    } else if (isNaN(mes)) {
+      setErrorB("The date is not valid", true);
+      isValid = false;
+    }
 
     const fechaNacimiento = new Date(
       parseInt(año),
       parseInt(mes) - 1,
       parseInt(dia)
     );
-   
 
     if (año === "") {
       setErrorC("This field is required", true);
+      isValid = false;
     } else if (isNaN(año)) {
       setErrorC("the date is not valid", true);
+      isValid = false;
+    } else if (año > 2023) {
+      setErrorC("the date is not valid", true);
+      isValid = false;
     }
 
     const fechaActual = new Date();
 
     if (fechaNacimiento > fechaActual) {
-      setErrorC("Must be in the past");
+      setErrorC("Must be in the past", true);
+      isValid = false;
     }
+    return isValid;
   };
 
   const calcularEdad = () => {
-   
-    if (!validarFecha()){
-      return
+    if (!validarFecha()) {
+      return;
     }
 
     const fechaActual = new Date();
@@ -156,7 +167,7 @@ export function Formulario() {
         <div className="line-btn">
           <hr className="hr1"></hr>
           <button className="btn" onClick={calcularEdad}>
-            <img src='Arrow.svg' className="icon" alt="text"/>
+            <img src="Arrow.svg" className="icon" alt="text" />
           </button>
           <hr className="hr2"></hr>
         </div>
